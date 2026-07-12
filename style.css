@@ -83,6 +83,7 @@ button:disabled {
 .score-board {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     font-size: 1.1rem;
     font-weight: bold;
     background-color: #f5f5f5;
@@ -90,6 +91,16 @@ button:disabled {
     border-radius: 10px;
     margin-bottom: 20px;
     color: #424242;
+    gap: 10px;
+}
+
+.score-board p {
+    flex: 1;
+    text-align: center;
+}
+
+#timer-value.timer-warning {
+    color: #e53935;
 }
 
 /* Fractions Display */

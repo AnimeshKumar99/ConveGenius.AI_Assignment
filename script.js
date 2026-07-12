@@ -6,7 +6,10 @@ let targetDenominator = 0;
 let currentNumerator = 0;
 let currentLevel = 1;
 let currentScore = 0;
+let timeLeft = 30;
+let timerInterval = null;
 const maxLevels = 5;
+const timerDuration = 30;
 
 // DOM Elements
 const homeScreen = document.getElementById('home-screen');
@@ -22,6 +25,7 @@ const circleContainer = document.getElementById('fraction-circle');
 const messageEl = document.getElementById('message');
 const levelEl = document.getElementById('current-level');
 const scoreEl = document.getElementById('current-score');
+const timerValueEl = document.getElementById('timer-value');
 
 const addBtn = document.getElementById('add-btn');
 const removeBtn = document.getElementById('remove-btn');
@@ -133,6 +137,48 @@ function startLevel() {
     scoreEl.textContent = currentScore;
     
     resetGame();
+    startTimer();
+}
+
+function updateTimerDisplay() {
+    timerValueEl.textContent = timeLeft;
+    timerValueEl.classList.toggle('timer-warning', timeLeft <= 10);
+}
+
+function startTimer() {
+    clearTimer();
+    timeLeft = timerDuration;
+    updateTimerDisplay();
+
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+
+        if (timeLeft <= 0) {
+            handleTimeUp();
+        }
+    }, 1000);
+}
+
+function clearTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
+function handleTimeUp() {
+    clearTimer();
+    messageEl.textContent = "Time's up!";
+    messageEl.className = 'message wrong';
+    playSound('wrong');
+
+    addBtn.disabled = true;
+    removeBtn.disabled = true;
+    resetBtn.disabled = true;
+    submitBtn.disabled = true;
+
+    setTimeout(nextLevel, 1000);
 }
 
 function createCircle() {
@@ -211,6 +257,8 @@ function removePiece() {
 }
 
 function checkAnswer() {
+    clearTimer();
+
     // Compare the current fraction with the target fraction
     if (currentNumerator === targetNumerator) {
         messageEl.textContent = 'Correct!';
@@ -263,6 +311,7 @@ function resetGame() {
 }
 
 function nextLevel() {
+    clearTimer();
     currentLevel++;
     submitBtn.removeAttribute('data-scored');
     
